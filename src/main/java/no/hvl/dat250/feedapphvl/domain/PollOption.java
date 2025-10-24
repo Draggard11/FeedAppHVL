@@ -17,6 +17,14 @@ public class PollOption {
     @Setter
     private String title;
 
+    @Setter
+    private String description;
+
+    @Setter
+    private int presentationOrder;
+
+    //TODO implement lookup on votes -> get Voter and how many votes
+
     // default constructor
     public PollOption() {}
 
