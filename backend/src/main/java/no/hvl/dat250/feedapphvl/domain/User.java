@@ -1,11 +1,12 @@
 package no.hvl.dat250.feedapphvl.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,11 +20,32 @@ public class User {
     @Setter
     private String email;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "createdBy")
+    @JsonManagedReference(value = "created")
+    private Set<Poll> created;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "voted")
+    private Set<Vote> voted;
     // default constructor
     public User() {}
 
-    public Poll createPoll() {
-        return new Poll();
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+        this.created = new LinkedHashSet<>();
+        this.voted = new LinkedHashSet<>();
+    }
+
+    public Vote voteFor(PollOption option) {
+        Vote v = new Vote(option);
+        return v;
+    }
+
+    public Poll createPoll(String question) {
+        Poll p = new Poll(question, this);
+        this.created.add(p);
+        return p;
     }
 
     public void voteOnOption(PollOption option) {}

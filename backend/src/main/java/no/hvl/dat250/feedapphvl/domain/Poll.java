@@ -30,7 +30,7 @@ public class Poll {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference(value = "pollOptions")
-    private List<PollOption> pollOption;
+    private List<PollOption> pollOptions;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -39,7 +39,7 @@ public class Poll {
 
     public Poll(String question, User createdBy) {
         this.question = question;
-        this.pollOption = new ArrayList<>();
+        this.pollOptions = new ArrayList<>();
         this.publishedAt = Instant.now();
     }
 
@@ -47,8 +47,8 @@ public class Poll {
     }
 
     public PollOption addOption(String caption) {
-        PollOption o = new PollOption(caption, this.pollOption.size());
-        this.pollOption.add(o);
+        PollOption o = new PollOption(caption, this.pollOptions.size());
+        this.pollOptions.add(o);
         return o;
     }
 

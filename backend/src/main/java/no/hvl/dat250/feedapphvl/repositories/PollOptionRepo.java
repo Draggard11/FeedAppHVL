@@ -5,5 +5,5 @@ import no.hvl.dat250.feedapphvl.domain.PollOption;
 import org.springframework.data.repository.CrudRepository;
 
 
-public interface PollOptionsRepo extends CrudRepository<PollOption, Long> {
+public interface PollOptionRepo extends CrudRepository<PollOption, Long> {
 }
