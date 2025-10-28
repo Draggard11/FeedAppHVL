@@ -6,6 +6,9 @@
 *.ipr
 *.iws
 
+.gradle/
+build/
+
 # Logs
 *.log
 
