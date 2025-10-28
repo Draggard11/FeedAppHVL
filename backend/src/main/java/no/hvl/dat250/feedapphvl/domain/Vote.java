@@ -9,13 +9,14 @@ public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
-    @ManyToOne
-    private PollOption pollOption;
-
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "option_id", nullable = false)
+    private PollOption votedOn;
+    
     public Vote(PollOption option) {
-        this.pollOption = option;
+        this.votedOn = option;
     }
 
     public Vote(){
@@ -26,6 +27,6 @@ public class Vote {
 
     @JsonIdentityReference(alwaysAsId = true)
     public PollOption getVotedOn() {
-        return this.pollOption;
+        return this.votedOn;
     }
 }
