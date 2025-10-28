@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "votes")
 public class Vote {
 
     @Id
@@ -12,10 +11,10 @@ public class Vote {
     private Long userId;
 
     @ManyToOne
-    private PollOption pollOption;
+    private PollOption votedOn;
 
     public Vote(PollOption option) {
-        this.pollOption = option;
+        this.votedOn = option;
     }
 
     public Vote(){
@@ -26,6 +25,6 @@ public class Vote {
 
     @JsonIdentityReference(alwaysAsId = true)
     public PollOption getVotedOn() {
-        return this.pollOption;
+        return this.votedOn;
     }
 }

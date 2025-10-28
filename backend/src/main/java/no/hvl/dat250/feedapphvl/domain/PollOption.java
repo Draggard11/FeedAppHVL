@@ -1,6 +1,5 @@
 package no.hvl.dat250.feedapphvl.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
