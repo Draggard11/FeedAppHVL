@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "votes")
 public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "option_id", nullable = false)
     private PollOption votedOn;
-
+    
     public Vote(PollOption option) {
         this.votedOn = option;
     }

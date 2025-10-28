@@ -23,10 +23,8 @@ public class PollOption {
     @Setter
     private int presentationOrder;
 
-    //TODO implement lookup on votes -> get Voter and how many votes
-    @OneToMany(mappedBy = "votedOn")
-
-    private Set<Vote> votes;
+    @OneToMany(mappedBy = "votedOn", fetch = FetchType.LAZY)
+    private Set<Vote> votes = new LinkedHashSet<>();
 
     // default constructor
     public PollOption() {}
