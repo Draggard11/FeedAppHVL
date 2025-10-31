@@ -18,8 +18,12 @@ public class User {
 
     @Setter
     private String username;
+
     @Setter
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "createdBy")
     @JsonManagedReference(value = "created")
