@@ -17,9 +17,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -31,10 +33,12 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
+    private final SecurityContextRepository securityContextRepository;
 
     @Autowired
-    public UserController(AuthenticationManager authenticationManager) {
+    public UserController(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
         this.authenticationManager = authenticationManager;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @GetMapping("/login")
@@ -64,16 +68,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login( @RequestParam String username, @RequestParam String password, HttpServletRequest request) {
+    public ResponseEntity<?> login( @RequestParam String username, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
 
         Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        // store in SecurityContext so Spring creates a session
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        request.getSession(true); // ensure session is created now
+        // build and store context
+        var context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
 
+        // ensure session exists
+        request.getSession(true);
+
+        // SAVE the context to session so it's available on the next request
+        securityContextRepository.saveContext(context, request, response);
         var principal = (UserDetails) auth.getPrincipal();
         var roles = principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority).toList();
@@ -82,6 +92,25 @@ public class UserController {
             "username", principal.getUsername(),
             "roles", roles
         ));
+    }
+
+    //kun for http testing
+    @GetMapping("/me")
+    public Map<String, Object> me() {
+        var a = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        return Map.of(
+            "name", a == null ? null : a.getName(),
+            "auth", a == null ? null : a.getAuthorities(),
+            "authenticated", a != null && a.isAuthenticated()
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        var session = request.getSession(false);
+        if (session != null) session.invalidate();
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().build();
     }
 
 }

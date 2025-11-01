@@ -15,10 +15,17 @@ username=alice&password=pass123
 ### GET /login (should be 200, body "login")
 GET {{host}}/login
 
-### POST /login (form-encoded; your current handler just echoes "login")
+### POST /login 
 POST {{host}}/login
 Content-Type: {{form}}
 
 username=alice&password=pass123
 
+### Get /me (should show user alice)
+GET  {{host}}/me
 
+### POST /logout 
+POST  {{host}}/logout
+
+### Get /me (should now show anonymous user)
+GET  {{host}}/me

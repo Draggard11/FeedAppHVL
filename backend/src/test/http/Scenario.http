@@ -1,0 +1,137 @@
+### Base
+@host = http://localhost:8080
+@form = application/x-www-form-urlencoded
+@json = application/json
+
+@userId = 1
+
+### POST /register alice
+POST {{host}}/register
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+### POST /register bob
+POST {{host}}/register
+Content-Type: {{form}}
+
+username=bob&password=passabc
+
+### POST /login alice fail
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=alice&password=wrongpass
+
+### POST /login bob fail
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=bob&password=wrongpass
+
+### Login alice
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+### Get /me (should show user alice)
+GET  {{host}}/me
+
+### Login bob
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=bob&password=passabc
+
+### Get /me (should show user bob)
+GET  {{host}}/me
+
+### POST /logout 
+POST  {{host}}/logout
+
+### Get /me (should show user anonymous)
+GET  {{host}}/me
+
+### Attempt to create a poll
+POST {{host}}/polls
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "createdBy": {{userId}},
+  "question": "Can I create a poll?",
+  "options": ["No", "Nope", "Hell nah", "Yes... Jk no!"]
+}
+
+### Login alice again
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+### Create a poll
+POST {{host}}/polls
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "createdBy": {{userId}},
+  "question": "Best backend language?",
+  "options": ["Java", "Kotlin", "Go"]
+}
+
+### Create another poll
+POST {{host}}/polls
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "createdBy": {{userId}},
+  "question": "Best color starting with the letter m?",
+  "options": ["Magenta", "mlue"]
+}
+
+### List all polls (should show 2 polls)
+GET {{host}}/polls
+Accept: {{json}}
+
+### Get poll by id 
+GET {{host}}/polls/1
+Accept: {{json}}
+
+### Get poll by id 
+GET {{host}}/polls/2
+Accept: {{json}}
+
+### Get poll by wrong id 
+GET {{host}}/polls/50
+Accept: {{json}}
+
+### Vote on option"
+POST {{host}}/polls/1/votes
+Content-Type: {{form}}
+
+option=0&userId={{userId}}
+
+### Vote on option"
+POST {{host}}/polls/2/votes
+Content-Type: {{form}}
+
+option=1&userId={{userId}}
+
+### List all polls (should show polls with votes)
+GET {{host}}/polls
+Accept: {{json}}
+
+### invalid option index, should fail
+POST {{host}}/polls/1/votes
+Content-Type: {{form}}
+
+option=99&userId={{userId}}
+
+### invalid poll index, should fail
+POST {{host}}/polls/5/votes
+Content-Type: {{form}}
+
+option=1&userId={{userId}}

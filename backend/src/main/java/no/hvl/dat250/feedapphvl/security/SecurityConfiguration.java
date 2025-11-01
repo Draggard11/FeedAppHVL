@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 import java.util.Arrays;
 
@@ -24,13 +26,15 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests((authorize) -> authorize
-                    .requestMatchers("/login", "/register").permitAll()
-                    .requestMatchers("/polls/**").hasAuthority("USER")
-                    .anyRequest().authenticated()
-                )
-                .build();
+        return http
+            .csrf(csrf -> csrf.disable()) // important for POST from REST client
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("me", "/login", "/register").permitAll()
+                .requestMatchers("/polls/**").hasAuthority("USER") 
+                .anyRequest().authenticated()
+            )
+            .headers(h -> h.frameOptions(f -> f.sameOrigin())) // H2 console in frames
+            .build();
     }
 
     @Bean
@@ -43,6 +47,10 @@ public class SecurityConfiguration {
         return cfg.getAuthenticationManager();
     }
 
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
 
 
 }
