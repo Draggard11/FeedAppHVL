@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* 
 package no.hvl.dat250.feedapphvl.security;
 
 import org.springframework.context.annotation.Bean;
@@ -26,12 +26,12 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
+*/
 /**
  * An example of explicitly configuring Spring Security with the defaults.
  *
  * @author Rob Winch
- */
+ *
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -62,3 +62,4 @@ public class SecurityConfiguration {
     // @formatter:on
 
 }
+    */

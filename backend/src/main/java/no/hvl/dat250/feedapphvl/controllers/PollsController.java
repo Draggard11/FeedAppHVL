@@ -56,7 +56,7 @@ public class PollsController {
         User u = maybeUser.get();
         Poll p = u.createPoll(request.question());
         List<PollOption> options = new ArrayList<>();
-        for (String o : request.options()) {
+        for (PollOption o : request.options()) {
             options.add(p.addOption(o));
         }
         p = pollsRepo.save(p);

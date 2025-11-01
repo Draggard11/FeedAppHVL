@@ -46,10 +46,9 @@ public class Poll {
     public Poll() {
     }
 
-    public PollOption addOption(String caption) {
-        PollOption o = new PollOption(caption, this.pollOptions.size());
-        this.pollOptions.add(o);
-        return o;
+    public PollOption addOption(PollOption o2) {
+        this.pollOptions.add(o2);
+        return o2;
     }
 
 }
