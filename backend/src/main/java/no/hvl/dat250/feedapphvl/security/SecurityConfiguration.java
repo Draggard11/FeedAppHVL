@@ -27,13 +27,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable()) // important for POST from REST client
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("me", "/login", "/register").permitAll()
-                .requestMatchers("/polls/**").hasAuthority("USER") 
+                .requestMatchers("/polls/**").hasRole("USER") 
                 .anyRequest().authenticated()
             )
-            .headers(h -> h.frameOptions(f -> f.sameOrigin())) // H2 console in frames
             .build();
     }
 
