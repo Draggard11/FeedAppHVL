@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Getter
 public class PollOption {
@@ -24,6 +26,7 @@ public class PollOption {
     private int presentationOrder;
 
     @OneToMany(mappedBy = "votedOn", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Vote> votes = new LinkedHashSet<>();
 
     // default constructor

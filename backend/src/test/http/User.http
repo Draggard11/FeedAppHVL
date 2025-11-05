@@ -1,0 +1,31 @@
+### Base
+@host = http://localhost:8080
+@form = application/x-www-form-urlencoded
+@json = application/json
+
+### GET /register (should be 200, body "register")
+GET {{host}}/register
+
+### POST /register (form-encoded)
+POST {{host}}/register
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+### GET /login (should be 200, body "login")
+GET {{host}}/login
+
+### POST /login 
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+### Get /me (should show user alice)
+GET  {{host}}/me
+
+### POST /logout 
+POST  {{host}}/logout
+
+### Get /me (should now show anonymous user)
+GET  {{host}}/me

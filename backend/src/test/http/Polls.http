@@ -1,0 +1,49 @@
+### Base
+@host = http://localhost:8080
+@json = application/json
+@form = application/x-www-form-urlencoded
+
+@userId = 1
+
+
+POST {{host}}/register
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+###
+# 2) Login (creates session; client should carry JSESSIONID cookie)
+POST {{host}}/login
+Content-Type: {{form}}
+
+username=alice&password=pass123
+
+###
+# 3) Create a poll (requires session + USER auth)
+POST {{host}}/polls
+Content-Type: {{json}}
+Accept: {{json}}
+
+{
+  "createdBy": {{userId}},
+  "question": "Bessst backend language?",
+  "options": ["Java", "Kotlin", "Go"]
+}
+
+###
+# 4) List all polls
+GET {{host}}/polls
+Accept: {{json}}
+
+###
+# 5) Get poll by id 
+GET {{host}}/polls/1
+Accept: {{json}}
+
+###
+# 6) Vote on option index (0-based)."
+POST {{host}}/polls/1/votes
+Content-Type: {{form}}
+
+option=2&userId={{userId}}
+

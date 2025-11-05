@@ -39,6 +39,7 @@ public class Poll {
 
     public Poll(String question, User createdBy) {
         this.question = question;
+        this.createdBy = createdBy;
         this.pollOptions = new ArrayList<>();
         this.publishedAt = Instant.now();
     }
