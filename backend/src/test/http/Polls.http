@@ -7,16 +7,24 @@
 
 
 POST {{host}}/register
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "alice",
+  "email": "alice@alice.alice",
+  "password": "pass123"
+}
 
 ###
 # 2) Login (creates session; client should carry JSESSIONID cookie)
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "alice",
+  "email": "alice@alice.alice",
+  "password": "pass123"
+}
 
 ###
 # 3) Create a poll (requires session + USER auth)

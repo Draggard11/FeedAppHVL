@@ -3,11 +3,9 @@ package no.hvl.dat250.feedapphvl.controllers;
 import no.hvl.dat250.feedapphvl.domain.Roles;
 import no.hvl.dat250.feedapphvl.domain.User;
 import no.hvl.dat250.feedapphvl.dtos.ErrorMsg;
-import no.hvl.dat250.feedapphvl.dtos.NewUserRequest;
 import no.hvl.dat250.feedapphvl.repositories.UserRepo;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 @RestController
+@CrossOrigin(origins = "https://localhost:5173")
 public class UserController {
 
     @Autowired
@@ -42,36 +41,33 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login() {
-
-        return "login";
-    }
+    public String login() {return "login";}
 
     @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
+    public String register() {return "register";}
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam String username, @RequestParam String password) {
-        if (userRepo.findByUsername(username).isPresent()) {
-            return ResponseEntity.badRequest().body(new ErrorMsg("User with username '" + username + "' already exists"));
+    public ResponseEntity<?> register(@RequestBody User user) {
+        System.out.println(user);
+        if (userRepo.findByUsername(user.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body(new ErrorMsg("User with username '" + user.getUsername() + "' already exists"));
         }
-        String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
         User u = new User();
-        u.setUsername(username);
+        u.setUsername(user.getUsername());
+        u.setEmail(user.getEmail());
         u.setPassword(encodedPassword);
         u.setRole(Roles.USER);
         userRepo.save(u);
 
-        return ResponseEntity.ok("User created: " + username);
+        return ResponseEntity.ok("User created: " + user.getUsername());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login( @RequestParam String username, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> login( @RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
 
         Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(username, password)
+            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
         );
 
         // build and store context

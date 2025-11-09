@@ -8,20 +8,28 @@ GET {{host}}/register
 
 ### POST /register (form-encoded)
 POST {{host}}/register
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "bob",
+  "email": "bob@bob.bob",
+  "password": "passabc"
+}
 
 ### GET /login (should be 200, body "login")
 GET {{host}}/login
 
 ### POST /login 
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "bob",
+  "email": "bob@bob.bob",
+  "password": "passabc"
+}
 
-### Get /me (should show user alice)
+### Get /me (should show user bob)
 GET  {{host}}/me
 
 ### POST /logout 
