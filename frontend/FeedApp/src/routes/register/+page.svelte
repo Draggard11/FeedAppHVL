@@ -15,7 +15,6 @@
         try {
             let response = await register(username, email, password);
             message = response.message;
-            window.location.href = "/me";
         } catch (error) {
             message = error.message;
         } finally {

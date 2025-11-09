@@ -8,6 +8,7 @@ import no.hvl.dat250.feedapphvl.repositories.UserRepo;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +24,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 @RestController
-@CrossOrigin(origins = "https://localhost:5173")
 public class UserController {
 
     @Autowired
@@ -60,7 +60,7 @@ public class UserController {
         u.setRole(Roles.USER);
         userRepo.save(u);
 
-        return ResponseEntity.ok("User created: " + user.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created: " + user.getUsername()));
     }
 
     @PostMapping("/login")
@@ -84,7 +84,7 @@ public class UserController {
         var roles = principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority).toList();
 
-        return ResponseEntity.ok(Map.of(
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
             "username", principal.getUsername(),
             "roles", roles
         ));
@@ -102,11 +102,11 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<?> logout(HttpServletRequest request) {
         var session = request.getSession(false);
         if (session != null) session.invalidate();
         org.springframework.security.core.context.SecurityContextHolder.clearContext();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
 
 }

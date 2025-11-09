@@ -15,7 +15,6 @@
         try {
             let response = await login(username, email, password);
             message = response.message;
-            window.location.href = "/me";
         } catch (error) {
             message = error.message;
         } finally {
