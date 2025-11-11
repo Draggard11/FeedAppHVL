@@ -66,7 +66,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody NewUserRequest user, HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(user.password(), user.password())
+            new UsernamePasswordAuthenticationToken(user.username(), user.password())
         );
 
 
@@ -77,6 +77,8 @@ public class UserController {
 
         // ensure session exists
         request.getSession(true);
+
+        //TODO throw error if already logged in
 
         // SAVE the context to session so it's available on the next request
         securityContextRepository.saveContext(context, request, response);
