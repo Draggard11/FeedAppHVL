@@ -3,6 +3,7 @@ package no.hvl.dat250.feedapphvl.controllers;
 import no.hvl.dat250.feedapphvl.domain.Roles;
 import no.hvl.dat250.feedapphvl.domain.User;
 import no.hvl.dat250.feedapphvl.dtos.ErrorMsg;
+import no.hvl.dat250.feedapphvl.dtos.NewUserRequest;
 import no.hvl.dat250.feedapphvl.repositories.UserRepo;
 
 import java.util.Map;
@@ -47,29 +48,26 @@ public class UserController {
     public String register() {return "register";}
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        System.out.println(user);
-        if (userRepo.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body(new ErrorMsg("User with username '" + user.getUsername() + "' already exists"));
+    public ResponseEntity<?> register(@RequestBody NewUserRequest user) {
+        if (userRepo.findByUsername(user.username()).isPresent()) {
+            return ResponseEntity.badRequest().body(new ErrorMsg("User with username '" + user.username() + "' already exists"));
         }
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        String encodedPassword = passwordEncoder.encode(user.password());
         User u = new User();
-        u.setUsername(user.getUsername());
-        u.setEmail(user.getEmail());
+        u.setUsername(user.username());
+        u.setEmail(user.email());
         u.setPassword(encodedPassword);
         u.setRole(Roles.USER);
         userRepo.save(u);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created: " + user.getUsername()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created: " + user.username()));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login( @RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(user);
+    public ResponseEntity<?> login(@RequestBody NewUserRequest user, HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+            new UsernamePasswordAuthenticationToken(user.password(), user.password())
         );
-        System.out.println(user);
 
 
         // build and store context
@@ -77,12 +75,8 @@ public class UserController {
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);
 
-        System.out.println(user);
-
         // ensure session exists
         request.getSession(true);
-
-        System.out.println(user);
 
         // SAVE the context to session so it's available on the next request
         securityContextRepository.saveContext(context, request, response);
