@@ -1,34 +1,69 @@
-// javascript
 export const login = async (username, email, password) => {
-    const response = await fetch('http://localhost:8080/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-        credentials: 'include'
-    });
+    try {
+        const response = await fetch('http://localhost:8080/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password }),
+            credentials: 'include'
+        });
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "login failed");
+        }
+        const data = await response.json();
+        return {
+            message: `Logged in as ${data.username}`,
+            user: data.username, // can be used later
+            id: data.id, // also be used later
+        }
+    } catch(error) {
+        throw new Error(error.message || "login failed");
+    }
 };
 
 export const register = async (username, email, password) => {
-    const response = await fetch('http://localhost:8080/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-        credentials: 'include'
-    });
+    try {
+        const response = await fetch('http://localhost:8080/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password }),
+            credentials: 'include'
+        });
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "failed to register");
+        }
+        const data = await response.json();
+        return {
+            message: `Logged in as ${data.username}`,
+            user: data.username, // can be used later
+            id: data.id, // also be used later
+        }
+    } catch(error) {
+        throw new Error(error.message || "register failed");
+    }
 };
 
 export const logout = async () => {
-    const response = await fetch('https://localhost:8080/logout', {
-        method: 'POST',
-        credentials: 'include'
-    });
+    try {
+        const response = await fetch('https://localhost:8080/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || "logout failed");
+        }
+        const data = await response.json();
+        return {
+            message: `Logged out as ${data.username}`,
+            user: data.username,
+            id: data.id,
+        }
+    } catch(error) {
+        throw new Error(error.message || "logout failed");
+    }
 }

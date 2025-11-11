@@ -12,14 +12,10 @@
 
         isLoading = true;
 
-        try {
-            let response = await register(username, email, password);
-            message = response.message;
-        } catch (error) {
-            message = error.message;
-        } finally {
-            isLoading = false;
-        }
+        let response = await register(username, email, password);
+        message = response.message;
+
+        isLoading = false;
     };
 </script>
 

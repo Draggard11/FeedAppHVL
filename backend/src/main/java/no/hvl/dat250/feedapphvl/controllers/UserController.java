@@ -65,18 +65,24 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login( @RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
-
+        System.out.println(user);
         Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
         );
+        System.out.println(user);
+
 
         // build and store context
         var context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);
 
+        System.out.println(user);
+
         // ensure session exists
         request.getSession(true);
+
+        System.out.println(user);
 
         // SAVE the context to session so it's available on the next request
         securityContextRepository.saveContext(context, request, response);
