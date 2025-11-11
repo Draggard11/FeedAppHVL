@@ -60,7 +60,10 @@ public class UserController {
         u.setRole(Roles.USER);
         userRepo.save(u);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User created: " + user.username()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "username", u.getUsername(),
+                "userid", u.getId()
+        ));
     }
 
     @PostMapping("/login")
