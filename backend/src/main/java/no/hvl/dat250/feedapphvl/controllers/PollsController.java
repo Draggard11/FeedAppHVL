@@ -10,6 +10,7 @@ import no.hvl.dat250.feedapphvl.repositories.UserRepo;
 import no.hvl.dat250.feedapphvl.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import no.hvl.dat250.feedapphvl.dtos.ErrorMsg;
@@ -36,6 +37,11 @@ public class PollsController {
     @Autowired
     private VoteRepo voteRepo;
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    private static final String POLL_TOPIC = "polls-events";
+
     @GetMapping()
     public Iterable<Poll> allPolls() {
         return pollsRepo.findAll();
@@ -60,6 +66,7 @@ public class PollsController {
             options.add(p.addOption(o));
         }
         p = pollsRepo.save(p);
+        kafkaTemplate.send(POLL_TOPIC, "new poll created: " + p.getQuestion());
         return ResponseEntity.created(URI.create("/polls/" + p.getId())).body(p);
     }
 
