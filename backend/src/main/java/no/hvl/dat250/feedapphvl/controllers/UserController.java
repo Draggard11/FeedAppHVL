@@ -23,7 +23,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @RestController
 public class UserController {
 
@@ -62,7 +61,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "username", u.getUsername(),
-                "userid", u.getId()
+                "id", u.getId()
         ));
     }
 
@@ -71,6 +70,8 @@ public class UserController {
         Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(user.username(), user.password())
         );
+
+        var userId = .0;
 
 
         // build and store context
@@ -86,11 +87,17 @@ public class UserController {
         // SAVE the context to session so it's available on the next request
         securityContextRepository.saveContext(context, request, response);
         var principal = (UserDetails) auth.getPrincipal();
+        if (userRepo.findByUsername(principal.getUsername()).isPresent()) {
+            userId = userRepo.findByUsername(principal.getUsername()).get().getId();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         var roles = principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority).toList();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
             "username", principal.getUsername(),
+            "id", userId,
             "roles", roles
         ));
     }

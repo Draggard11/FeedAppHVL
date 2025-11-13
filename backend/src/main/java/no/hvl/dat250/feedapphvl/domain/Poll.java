@@ -21,7 +21,6 @@ public class Poll {
 
     private String question;
 
-    @Version
     private Instant publishedAt;
 
     @Setter

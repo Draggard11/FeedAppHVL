@@ -1,7 +1,8 @@
 <script>
     import {register} from '../../services/auth.js'
+    import {userId, username} from '../../userStore.js'
+    import {get} from 'svelte/store'
 
-    let username = ""
     let email = ""
     let password = ""
     let message = ""
@@ -9,19 +10,23 @@
 
     const handleRegister = async (event) => {
         event.preventDefault();
-
         isLoading = true;
 
-        let response = await register(username, email, password);
-        message = response.message;
-
-        isLoading = false;
+        try {
+            let response = await register(get(username), email, password);
+            message = response.message;
+            userId.set(response.id);
+        } catch(error) {
+            message = error.message;
+        } finally {
+            isLoading = false;
+        }
     };
 </script>
 
 <h1>register</h1>
 <form on:submit|preventDefault={handleRegister}>
-    <input type="text" placeholder="username" bind:value={username} required />
+    <input type="text" placeholder="username" bind:value={$username} required />
     <input type="email" placeholder="Email" bind:value={email}  required/>
     <input type="password" placeholder="Password" bind:value={password}  required/>
     <button type="submit" >{isLoading ? "registering..." : "register"}</button>

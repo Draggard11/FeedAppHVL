@@ -2,8 +2,8 @@ export const getPolls = async () => {
     try {
         const response = await fetch('http://localhost:8080/polls', {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
         });
 
         if (!response.ok) {
@@ -21,13 +21,17 @@ export const getPolls = async () => {
 };
 
 
-export const postPoll = async (userID, question, option) => {
+export const postPoll = async (userID, question, options) => {
     try {
         const response = await fetch('http://localhost:8080/polls', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({userID, question, option}),
-            credentials: 'include'
+            body: JSON.stringify({
+                createdBy: userID,
+                question: question,
+                options: options
+            }),
         });
 
         if (!response.ok) {
@@ -38,6 +42,7 @@ export const postPoll = async (userID, question, option) => {
         const data = await response.json();
         return {
             message: data.message,
+
         }
     } catch (error) {
         throw new Error(error.message || "could not post poll");

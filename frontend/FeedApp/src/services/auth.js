@@ -2,9 +2,13 @@ export const login = async (username, email, password) => {
     try {
         const response = await fetch('http://localhost:8080/login', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password }),
-            credentials: 'include'
+            body: JSON.stringify(
+                {username: username,
+                    email: email,
+                    password: password,
+                }),
         });
 
         if (!response.ok) {
@@ -15,7 +19,7 @@ export const login = async (username, email, password) => {
         return {
             message: `Logged in as ${data.username}`,
             user: data.username, // can be used later
-            id: data.id, // also be used later
+            id: data.id,
         }
     } catch(error) {
         throw new Error(error.message || "login failed");
@@ -26,23 +30,24 @@ export const register = async (username, email, password) => {
     try {
         const response = await fetch('http://localhost:8080/register', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password }),
-            credentials: 'include'
+            body: JSON.stringify(
+                {username: username,
+                    email: email,
+                    password: password,
+                }),
         });
 
         if (!response.ok) {
             const data = await response.json();
             throw new Error(data.message || "failed to register");
         }
-        const data = await response.json();
-        return {
-            message: `Logged in as ${data.username}`,
-            user: data.username, // can be used later
-            id: data.id, // also be used later
-        }
+
+        return await login(username, email, password)
+
     } catch(error) {
-        throw new Error(error.message || "register failed");
+        throw new Error(error.message || "failed to register");
     }
 };
 
