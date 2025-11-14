@@ -7,9 +7,9 @@ import no.hvl.dat250.feedapphvl.dtos.NewUserRequest;
 import no.hvl.dat250.feedapphvl.repositories.UserRepo;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 
 @RestController
 public class UserController {
@@ -42,37 +41,38 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login() {
-
-        return "login";
-    }
+    public String login() {return "login";}
 
     @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
+    public String register() {return "register";}
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam String username, @RequestParam String password) {
-        if (userRepo.findByUsername(username).isPresent()) {
-            return ResponseEntity.badRequest().body(new ErrorMsg("User with username '" + username + "' already exists"));
+    public ResponseEntity<?> register(@RequestBody NewUserRequest user) {
+        if (userRepo.findByUsername(user.username()).isPresent()) {
+            return ResponseEntity.badRequest().body(new ErrorMsg("User with username '" + user.username() + "' already exists"));
         }
-        String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(user.password());
         User u = new User();
-        u.setUsername(username);
+        u.setUsername(user.username());
+        u.setEmail(user.email());
         u.setPassword(encodedPassword);
         u.setRole(Roles.USER);
         userRepo.save(u);
 
-        return ResponseEntity.ok("User created: " + username);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "username", u.getUsername(),
+                "id", u.getId()
+        ));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login( @RequestParam String username, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
-
+    public ResponseEntity<?> login(@RequestBody NewUserRequest user, HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(username, password)
+            new UsernamePasswordAuthenticationToken(user.username(), user.password())
         );
+
+        var userId = .0;
+
 
         // build and store context
         var context = SecurityContextHolder.createEmptyContext();
@@ -82,14 +82,22 @@ public class UserController {
         // ensure session exists
         request.getSession(true);
 
+        //TODO throw error if already logged in
+
         // SAVE the context to session so it's available on the next request
         securityContextRepository.saveContext(context, request, response);
         var principal = (UserDetails) auth.getPrincipal();
+        if (userRepo.findByUsername(principal.getUsername()).isPresent()) {
+            userId = userRepo.findByUsername(principal.getUsername()).get().getId();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         var roles = principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority).toList();
 
-        return ResponseEntity.ok(Map.of(
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
             "username", principal.getUsername(),
+            "id", userId,
             "roles", roles
         ));
     }
@@ -106,11 +114,11 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<?> logout(HttpServletRequest request) {
         var session = request.getSession(false);
         if (session != null) session.invalidate();
         org.springframework.security.core.context.SecurityContextHolder.clearContext();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("message", "Logged out"));
     }
 
 }

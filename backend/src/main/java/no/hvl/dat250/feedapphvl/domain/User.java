@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private String password;
 
     @Setter
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @JsonIgnore
     private Roles role;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "createdBy")
@@ -42,8 +42,12 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER)
     @JsonManagedReference(value = "voted") @JsonIgnore
     private Set<Vote> voted;
+
     // default constructor
-    public User() {}
+    public User() {
+        this.created = new LinkedHashSet<>();
+        this.voted = new LinkedHashSet<>();
+    }
 
     public User(String username, String email) {
         this.username = username;

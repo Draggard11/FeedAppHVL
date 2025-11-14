@@ -7,42 +7,66 @@
 
 ### POST /register alice
 POST {{host}}/register
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "alice",
+  "email": "alice@alice.alice",
+  "password": "pass123"
+}
 
 ### POST /register bob
 POST {{host}}/register
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=bob&password=passabc
+{
+  "username": "bob",
+  "email": "bob@bob.bob",
+  "password": "passabc"
+}
 
 ### POST /login alice fail
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=wrongpass
+{
+  "username": "alice",
+  "email": "alice@alice.alice",
+  "password": "wrongpass"
+}
 
 ### POST /login bob fail
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=bob&password=wrongpass
+{
+  "username": "bob",
+  "email": "bob@bob.bob",
+  "password": "wrongpass"
+}
 
 ### Login alice
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "alice",
+  "email": "alice@alice.alice",
+  "password": "pass123"
+}
 
 ### Get /me (should show user alice)
 GET  {{host}}/me
 
 ### Login bob
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=bob&password=passabc
+{
+  "username": "bob",
+  "email": "bob@bob.bob",
+  "password": "passabc"
+}
 
 ### Get /me (should show user bob)
 GET  {{host}}/me
@@ -66,9 +90,13 @@ Accept: {{json}}
 
 ### Login alice again
 POST {{host}}/login
-Content-Type: {{form}}
+Content-Type: {{json}}
 
-username=alice&password=pass123
+{
+  "username": "alice",
+  "email": "alice@alice.alice",
+  "password": "pass123"
+}
 
 ### Create a poll
 POST {{host}}/polls
