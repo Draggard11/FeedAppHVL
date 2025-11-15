@@ -63,6 +63,7 @@ public class PollsController {
         Poll p = u.createPoll(request.question());
         List<PollOption> options = new ArrayList<>();
         for (String o : request.options()) {
+            //TODO send poll topic with each option using kafka
             options.add(p.addOption(o));
         }
         p = pollsRepo.save(p);
@@ -81,6 +82,9 @@ public class PollsController {
         return ResponseEntity.ok().build();
     }
 
+    /*
+    this is called when a vote is given
+     */
     @PostMapping("/{id}/votes")
     @Transactional
     public ResponseEntity<?> createPoll(@PathVariable Long id, @RequestParam Integer option, @RequestParam Long userId) {
@@ -99,6 +103,7 @@ public class PollsController {
         PollOption pollOption = poll.getPollOptions().get(option);
         Vote vote = maybeUser.get().voteFor(pollOption);
         voteRepo.save(vote);
+        //TODO send kafka event on VOTE topic with vote option
         return ResponseEntity.ok().build();
     }
 
