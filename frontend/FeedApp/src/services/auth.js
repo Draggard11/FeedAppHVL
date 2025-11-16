@@ -53,7 +53,7 @@ export const register = async (username, email, password) => {
 
 export const logout = async () => {
     try {
-        const response = await fetch('https://localhost:8080/logout', {
+        const response = await fetch('http://localhost:8080/logout', {
             method: 'POST',
             credentials: 'include'
         });

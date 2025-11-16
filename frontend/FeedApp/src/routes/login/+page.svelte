@@ -1,21 +1,19 @@
 <script>
     import {login} from '../../services/auth.js'
     import {userId, username} from '../../userStore.js'
-    import {get} from 'svelte/store'
 
     let email = ""
     let password = ""
     let message = ""
     let isLoading = false;
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
+    const handleLogin = async () => {
         isLoading = true;
-
+        message = '';
         try {
-            let response = await login(get(username), email, password);
-            message = response.id;
-            userId.set(response.userId);
+            const response = await login($username, email, password);
+            message = response.message;
+            if (response.id != null) userId.set(response.id);
         } catch(error) {
             message = error.message;
         } finally {
