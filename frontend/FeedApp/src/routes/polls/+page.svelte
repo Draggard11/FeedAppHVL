@@ -7,7 +7,11 @@
 
 <h1>Polls</h1>
 
-<nav style="margin-bottom:1rem;">
+<nav style="
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  gap: .5rem;                /* space between buttons */
+  margin-bottom: 1rem;">
   <button type="button" on:click={() => (tab = 'vote')}   disabled={tab==='vote'}>Vote</button>
   <button type="button" on:click={() => (tab = 'create')} disabled={tab==='create'}>Create</button>
 </nav>

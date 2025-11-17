@@ -68,7 +68,7 @@ export const postVote = async (pollId, optionIndex, userID) => {
       throw new Error(msg);
     }
 
-    return true; // 200 OK with empty body
+    return true; 
   } catch (error) {
     throw new Error(error.message || 'could not submit vote');
   }

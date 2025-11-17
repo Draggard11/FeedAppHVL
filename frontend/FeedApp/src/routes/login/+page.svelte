@@ -23,12 +23,14 @@
 </script>
 
 <h1>login</h1>
-<form on:submit|preventDefault={handleLogin}>
-    <input type="text" placeholder="username" bind:value={$username} required />
-    <input type="email" placeholder="Email" bind:value={email}  required/>
-    <input type="password" placeholder="Password" bind:value={password}  required/>
-    <button type="submit" disabled="{isLoading}">{isLoading ? "logging in..." : "login"}</button>
-</form>
+<div class="card box">
+    <form on:submit|preventDefault={handleLogin}>
+        <input class="cred" type="text" placeholder="username" bind:value={$username} required />
+        <input class="cred" type="email" placeholder="Email" bind:value={email}  required/>
+        <input class="cred" type="password" placeholder="Password" bind:value={password}  required/>
+        <button type="submit" disabled="{isLoading}">{isLoading ? "logging in..." : "login"}</button>
+    </form>
+</div>
 
 {#if message}
     <p>{message}</p>

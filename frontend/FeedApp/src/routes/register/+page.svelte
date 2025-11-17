@@ -23,12 +23,14 @@
 </script>
 
 <h1>register</h1>
-<form on:submit|preventDefault={handleRegister}>
-    <input type="text" placeholder="username" bind:value={$username} required />
-    <input type="email" placeholder="Email" bind:value={email}  required/>
-    <input type="password" placeholder="Password" bind:value={password}  required/>
-    <button type="submit" >{isLoading ? "registering..." : "register"}</button>
-</form>
+<div class="card box">
+    <form on:submit|preventDefault={handleRegister}>
+        <input class="cred" type="text" placeholder="username" bind:value={$username} required />
+        <input class="cred" type="email" placeholder="Email" bind:value={email}  required/>
+        <input class="cred" type="password" placeholder="Password" bind:value={password}  required/>
+        <button type="submit" >{isLoading ? "registering..." : "register"}</button>
+    </form>
+</div>
 
 
 {#if message}

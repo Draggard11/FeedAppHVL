@@ -31,7 +31,7 @@
         saving = true;
         status = 'Saving…';
         try {
-        await postPoll(Number($userId), question.trim(), clean);
+        await postPoll($userId, question.trim(), clean);
         reset();
         status = 'Created poll!';
         } catch (error) {
