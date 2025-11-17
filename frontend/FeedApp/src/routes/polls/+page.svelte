@@ -1,39 +1,20 @@
 <script>
-    import {postPoll} from '../../services/polls.js'
-    import {userId} from '../../userStore.js'
+  import CreatePoll from './Create.svelte';
+  import Vote from './Vote.svelte';
 
-    let question = "";
-    let options = [""];
-    let message = "";
-    let isLoading = false;
-
-    const addOption = () => options = [...options, '']
-    const handlePollCreation = async () => {
-        isLoading = true;
-
-        try {
-            const response = await postPoll($userId, question, options);
-            message = response.message;
-            question = '';
-            options = [''];
-        } catch(error) {
-            message = error.message;
-        } finally {
-            isLoading = false;
-        }
-    };
+  let tab = 'vote'; // 'vote' | 'create'
 </script>
 
-<h1>create poll</h1>
-<form on:submit|preventDefault={handlePollCreation}>
-    <input type="text" placeholder="Poll Question" bind:value={question} required />
-    {#each options as option, index}
-        <input type="text" placeholder={`Option ${index + 1}`} bind:value={options[index]} required />
-    {/each}
-    <button type="button" on:click={addOption}>+ option</button>
-    <button type="submit">{isLoading ? 'creating...' : 'create poll'}</button>
-</form>
+<h1>Polls</h1>
 
-{#if message}
-    <p>{message}</p>
+<nav style="margin-bottom:1rem;">
+  <button type="button" on:click={() => (tab = 'vote')}   disabled={tab==='vote'}>Vote</button>
+  <button type="button" on:click={() => (tab = 'create')} disabled={tab==='create'}>Create</button>
+</nav>
+
+{#if tab === 'vote'}
+  <Vote />
+{/if}
+{#if tab === 'create'}
+  <CreatePoll />
 {/if}
