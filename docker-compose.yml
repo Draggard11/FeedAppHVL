@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - pollsnw
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - "127.0.0.1:9092:9092"
+    networks:
+      - pollsnw
+  frontend:
+    build:
+      context: frontend/FeedApp
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:5173:5173"
+    networks:
+      - pollsnw
+networks:
+  pollsnw:
+volumes:
+  pollsdbvol:
