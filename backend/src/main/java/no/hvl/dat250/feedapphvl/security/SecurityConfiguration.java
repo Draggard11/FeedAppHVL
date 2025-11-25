@@ -36,8 +36,8 @@ public class SecurityConfiguration {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("me", "/login", "/register").permitAll()
-                .requestMatchers("/polls/**").hasRole("USER") 
+                .requestMatchers("/me", "/login", "/register").permitAll()
+                .requestMatchers("/polls").hasRole("USER") 
                 .anyRequest().authenticated()
             )
             .logout((logout) -> logout

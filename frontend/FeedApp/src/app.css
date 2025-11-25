@@ -2,3 +2,72 @@ h1 {
     color: orange;
     text-align: center;
 }
+
+h2 { margin: 0; text-align: center; }
+
+.card {
+max-width: 700px;
+margin: 1.5rem auto;
+padding: 1rem;
+border: 1px solid #efefef;
+border-radius: 12px;
+}
+
+.box { background: #eeeeee; }
+
+.btn {
+padding: 0.5rem;
+border-radius: 8px;
+border: 1px solid #c7c7c7;
+background: #ffffff;
+cursor: pointer;
+}
+.field { margin: 0.5rem 0; }
+
+.input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #c7c7c7;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.cred {
+    width: 30%;
+    padding: 0.75rem;
+    border: 1px solid #c7c7c7;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #ffffff;
+    box-sizing: border-box;
+
+}
+
+.buttonField {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 0.75rem;
+}
+
+.list {
+display: flex;
+flex-wrap: wrap;
+gap: .5rem;
+margin-top: .75rem;
+}
+
+.options { margin-top: .75rem; display: grid; gap: .5rem; }
+.option-row { display: flex; justify-content: space-between; align-items: center; }
+
+.actions { margin-top: .75rem; display: flex; gap: .5rem; justify-content: center; }
+
+.btn:hover { filter: brightness(0.95); }
+.save { background: #a9f6b4; }
+.reset { background: #fcacac; }
+.white { background: #fff; }
+
+.status { text-align: center; margin-top: .5rem; }
+.center { display: flex; justify-content: center;}
