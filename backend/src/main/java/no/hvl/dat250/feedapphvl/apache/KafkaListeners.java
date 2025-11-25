@@ -9,13 +9,18 @@ import org.springframework.stereotype.Component;
 public class KafkaListeners {
 
     @Autowired
+    private PollWebSocketHandler ws;
+
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     @KafkaListener(topics = "polls-events", groupId = "polls-group")
-    public void handlePollEvent(String message) {
-        System.out.println("📩 Received poll event: " + message);
-        // broadcast to all connected clients
-        messagingTemplate.convertAndSend("/topic/polls", message);
+    public void handlePollEvent(String message) throws Exception {
+        if (message.startsWith("new Vote on Poll:")) {
+            Long pollId = Long.valueOf(message.split(":")[1]);
+
+            ws.broadcastToPoll(pollId, message);
+        }
     }
 
     @KafkaListener(topics = "users-events", groupId = "users-group")

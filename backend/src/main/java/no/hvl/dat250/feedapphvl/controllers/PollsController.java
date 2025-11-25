@@ -99,6 +99,7 @@ public class PollsController {
         PollOption pollOption = poll.getPollOptions().get(option);
         Vote vote = maybeUser.get().voteFor(pollOption);
         voteRepo.save(vote);
+        kafkaTemplate.send(POLL_TOPIC, "new Vote on Poll:" + poll.getId());
         return ResponseEntity.ok().build();
     }
 
