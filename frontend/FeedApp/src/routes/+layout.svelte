@@ -1,21 +1,21 @@
 <script>
-    import '../app.css'
-    import {logout} from '../services/auth.js'
-    import {getPolls} from '../services/polls.js'
-    import { userId } from '../userStore'
-    import { onMount } from 'svelte';
+    import "../app.css";
+    import { logout } from "../services/auth.js";
+    import { getPolls } from "../services/polls.js";
+    import { userId } from "../userStore";
+    import { onMount } from "svelte";
 
-    let polls = []
-    let isLoading = false
+    let polls = [];
+    let isLoading = false;
 
     onMount(async () => {
-        message = '';
+        message = "";
         isLoading = true;
         try {
             const res = await getPolls();
             polls = res;
         } catch (err) {
-            polls = []
+            polls = [];
             console.error(err);
         }
         isLoading = false;
@@ -36,19 +36,21 @@
     <b>"loading..."</b>
 {/if}
 
-
 {#if polls?.length}
     <ol>
         {#each polls as p}
-        <li>{p.question}</li>
+            <li>{p.question}</li>
         {/each}
     </ol>
 {/if}
 
 <style>
+    nav {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+    }
     nav button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
+        margin-left: auto; /* push logout to the right if you want */
     }
 </style>
