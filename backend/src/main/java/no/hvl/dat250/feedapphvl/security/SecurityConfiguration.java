@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -33,17 +32,17 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/me", "/login", "/register").permitAll()
-                .requestMatchers("/polls").hasRole("USER") 
-                .anyRequest().authenticated()
-            )
-            .logout((logout) -> logout
-                    .logoutUrl("/logout").permitAll()
-            )
-            .build();
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/me", "/login", "/register").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/polls/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/polls/*/votes").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/polls").hasRole("USER")
+                        .anyRequest().authenticated())
+                .logout((logout) -> logout
+                        .logoutUrl("/logout").permitAll())
+                .build();
     }
 
     @Bean
